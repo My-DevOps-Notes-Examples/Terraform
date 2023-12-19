@@ -1,7 +1,7 @@
 resource "aws_vpc" "multiuser" {
-  cidr_block = "192.168.0.0/16"
+  cidr_block = var.vpc_cidr
 
   tags = {
-    Name = "multiuser"
+    Name = "ntier-${terraform.workspace}"
   }
 }
