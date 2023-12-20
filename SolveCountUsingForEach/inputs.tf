@@ -1,4 +1,16 @@
 variable "filenames" {
-  type    = list(string)
-  default = ["1.txt", "2.txt", "3.txt"]
+  type = map(object({
+    name    = string
+    content = string
+  }))
+  default = {
+    "file1" = {
+      name    = "1.txt"
+      content = "hello"
+    }
+    "file2" = {
+      name    = "2.txt"
+      content = "terraform"
+    }
+  }
 }

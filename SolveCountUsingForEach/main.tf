@@ -1,5 +1,5 @@
 resource "local_file" "multifiles" {
-  for_each = toset(var.filenames)
-  content  = "solving Count problem using For_each"
-  filename = each.key
+  for_each = var.filenames
+  content  = each.value.content
+  filename = each.value.name
 }
