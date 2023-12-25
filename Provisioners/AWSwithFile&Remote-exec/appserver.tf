@@ -49,15 +49,7 @@ resource "aws_instance" "apache_server" {
     host        = self.public_ip # self is used within the resource
   }
 
-  provisioner "file" {
-    source      = "./apache.sh"
-    destination = "/tmp/apache.sh"
-  }
-
   provisioner "remote-exec" {
-    inline = [
-      "chmod +x /tmp/apache.sh",
-      "/tmp/apache.sh"
-    ]
+    inline = [ "sudo apt update", "sudo apt install apache2 -y" ]
   }
 }
