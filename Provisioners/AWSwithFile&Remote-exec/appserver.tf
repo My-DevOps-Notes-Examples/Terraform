@@ -37,9 +37,27 @@ resource "aws_instance" "apache_server" {
   key_name                    = "terraform"
   vpc_security_group_ids      = [aws_security_group.appserver_sg.id]
   subnet_id                   = data.aws_subnet.apache_server_subnet.id
-  user_data                   = file("apache.sh")
 
   tags = {
     Name = "apache-server"
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("C:/Users/nagas/Downloads/terraform.pem")
+    host        = self.public_ip # self is used within the resource
+  }
+
+  provisioner "file" {
+    source      = "./apache.sh"
+    destination = "/tmp/apache.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/apache.sh",
+      "/tmp/apache.sh"
+    ]
   }
 }
