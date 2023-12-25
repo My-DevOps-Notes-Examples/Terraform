@@ -41,15 +41,21 @@ resource "aws_instance" "apache_server" {
   tags = {
     Name = "apache-server"
   }
+}
+
+resource "null_resource" "execute_apache" {
+  triggers = {
+    rollout_version = var.rollout_version
+  }
 
   connection {
     type        = "ssh"
     user        = "ubuntu"
     private_key = file("C:/Users/nagas/Downloads/terraform.pem")
-    host        = self.public_ip # self is used within the resource
+    host        = aws_instance.apache_server.public_ip
   }
 
   provisioner "remote-exec" {
-    inline = [ "sudo apt update", "sudo apt install apache2 -y" ]
+    inline = ["sudo apt update", "sudo apt install apache2 -y"]
   }
 }

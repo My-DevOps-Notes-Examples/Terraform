@@ -43,3 +43,8 @@ variable "server_security_group" {
     protocol    = "tcp"
   }
 }
+
+variable "rollout_version" {
+  type    = string
+  default = "0.0.0.0"
+}
