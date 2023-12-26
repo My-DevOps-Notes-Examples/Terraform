@@ -29,8 +29,16 @@ resource "azurerm_linux_virtual_machine" "appserver" {
     host        = self.public_ip_address
   }
 
+  provisioner "file" {
+    source      = "./apache.sh"
+    destination = "/tmp/apache.sh"
+  }
+
   provisioner "remote-exec" {
-    inline = ["sudo apt update", "sudo apt install apache2 -y"]
+    inline = [
+      "sudo chmod +x /tmp/apache.sh",
+      "/tmp/apache.sh args"
+    ]
   }
 
   depends_on = [
