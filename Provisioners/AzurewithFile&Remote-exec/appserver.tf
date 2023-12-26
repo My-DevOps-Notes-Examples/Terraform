@@ -14,13 +14,23 @@ resource "azurerm_linux_virtual_machine" "appserver" {
     username   = "nagas"
     public_key = file("~/.ssh/id_rsa.pub")
   }
-  custom_data                     = filebase64("apache.sh")
   disable_password_authentication = false
   source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-focal"
     sku       = "20_04-lts-gen2"
     version   = "latest"
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "nagas"
+    private_key = file("~/.ssh/id_rsa")
+    host        = self.public_ip_address
+  }
+
+  provisioner "remote-exec" {
+    inline = ["sudo apt update", "sudo apt install apache2 -y"]
   }
 
   depends_on = [
