@@ -22,11 +22,22 @@ resource "azurerm_linux_virtual_machine" "appserver" {
     version   = "latest"
   }
 
+  depends_on = [
+    azurerm_network_interface_security_group_association.appserver_nicsg,
+    azurerm_network_interface.server_nic
+  ]
+}
+
+resource "null_resource" "execute-apache" {
+  triggers = {
+    rollout_version = var.rollout_version
+  }
+  
   connection {
     type        = "ssh"
     user        = "nagas"
     private_key = file("~/.ssh/id_rsa")
-    host        = self.public_ip_address
+    host        = azurerm_linux_virtual_machine.appserver.public_ip_address
   }
 
   provisioner "file" {
@@ -40,9 +51,4 @@ resource "azurerm_linux_virtual_machine" "appserver" {
       "/tmp/apache.sh args"
     ]
   }
-
-  depends_on = [
-    azurerm_network_interface_security_group_association.appserver_nicsg,
-    azurerm_network_interface.server_nic
-  ]
 }
